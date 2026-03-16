@@ -1,6 +1,4 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const getClient = () => new OpenAI({
   apiKey: process.env.OPENROUTER_KEY,

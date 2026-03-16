@@ -25,14 +25,14 @@ function PageLoader() {
 }
 
 function PrivateRoute({ children }) {
-  const user = useSelector(selectUser);
+  const user    = useSelector(selectUser);
   const loading = useSelector(selectAuthLoading);
   if (loading) return <PageLoader />;
   return user ? children : <Navigate to="/login" replace />;
 }
 
 function AdminRoute({ children }) {
-  const user = useSelector(selectUser);
+  const user    = useSelector(selectUser);
   const loading = useSelector(selectAuthLoading);
   if (loading) return <PageLoader />;
   return user?.role === 'admin' ? children : <Navigate to="/" replace />;
@@ -41,6 +41,7 @@ function AdminRoute({ children }) {
 function AppRoutes() {
   const dispatch = useDispatch();
 
+  // Verify stored token on mount
   useEffect(() => {
     dispatch(verifyAuth());
   }, [dispatch]);

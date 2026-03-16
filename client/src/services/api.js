@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// In production (Vercel), point to your deployed backend URL.
-// Set VITE_API_URL in Vercel environment variables.
-// In dev, Vite proxy handles /api → localhost:5000.
+// Priority:
+// 1. VITE_API_URL env var (set in Vercel dashboard) → used in production
+// 2. /api → used in local dev (Vite proxy forwards to localhost:5000)
 const baseURL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
   : '/api';
@@ -10,22 +10,43 @@ const baseURL = import.meta.env.VITE_API_URL
 const api = axios.create({
   baseURL,
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('cinestream_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+// Attach JWT token to every request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('cinestream_token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    // For FormData, let browser set Content-Type (multipart boundary)
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+    return config;
+  },
+  (err) => Promise.reject(err)
+);
 
+// Global response error handler
 api.interceptors.response.use(
-  r => r,
-  err => {
-    if (err.response?.status === 401) {
+  (res) => res,
+  (err) => {
+    const status = err.response?.status;
+    const message = err.response?.data?.message || err.message;
+
+    console.error(`[API Error] ${err.config?.method?.toUpperCase()} ${err.config?.url} → ${status}: ${message}`);
+
+    if (status === 401) {
       localStorage.removeItem('cinestream_token');
       localStorage.removeItem('cinestream_user');
-      window.location.href = '/login';
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
+
     return Promise.reject(err);
   }
 );
