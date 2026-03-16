@@ -1,0 +1,184 @@
+.browse-page { min-height: 100vh; padding-top: var(--nav-h); }
+.browse-inner { padding-top: 40px; padding-bottom: 60px; }
+
+.browse-header { margin-bottom: 28px; }
+.browse-header h1 { font-size: 28px; font-weight: 800; }
+
+/* ── Filter Bar ── */
+.browse-filters {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+/* ── Custom Dropdown ── */
+.filter-dropdown {
+  position: relative;
+  min-width: 170px;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 14px;
+}
+.dropdown-trigger:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+.filter-dropdown.open .dropdown-trigger {
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(var(--primary-rgb, 99, 102, 241), 0.25);
+}
+
+.dropdown-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.dropdown-value {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-arrow {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.filter-dropdown.open .dropdown-arrow {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+/* ── Dropdown Menu ── */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  min-width: 100%;
+  background: rgba(18, 18, 32, 0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 6px;
+  list-style: none;
+  margin: 0;
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+
+  /* Closed state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+.filter-dropdown.open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.dropdown-menu li {
+  margin: 0;
+}
+
+.dropdown-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+.dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+.dropdown-option.active {
+  background: rgba(var(--primary-rgb, 99, 102, 241), 0.15);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.option-check {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Scrollbar for long lists */
+.dropdown-menu::-webkit-scrollbar { width: 5px; }
+.dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+}
+
+/* ── Grid ── */
+.browse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.browse-empty {
+  text-align: center; padding: 80px 20px;
+  color: var(--text-muted); font-size: 18px;
+}
+
+.browse-more { text-align: center; margin-top: 40px; }
+
+/* ── Skeleton reuse ── */
+.skeleton-card { border-radius: var(--radius); overflow: hidden; background: var(--bg2); }
+.skeleton-thumb {
+  background: linear-gradient(90deg, #1a1a2e 25%, #222235 50%, #1a1a2e 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite;
+}
+.skeleton-line {
+  height: 10px; margin: 0 8px; border-radius: 5px;
+  background: linear-gradient(90deg, #1a1a2e 25%, #222235 50%, #1a1a2e 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .browse-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .filter-dropdown { min-width: 100%; }
+  .browse-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+}
